@@ -6,8 +6,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.retrievers import BM25Retriever
-import base64
 import streamlit as st
+from streamlit_extras.switch_page_button import switch_page
 from annotated_text import annotated_text
 import os
 
@@ -55,12 +55,12 @@ def semanticSearch(text, query):
 
     #similarity searching
     embedding_vector = hf_embedding_model.embed_query(query)
-    matches = db.similarity_search_by_vector(embedding_vector)
+    matches = db.similarity_search_with_score_by_vector(embedding_vector, k= 25)
     
 
     #retriever
-    retriever = BM25Retriever.from_texts(split_text)
-    matches = retriever.invoke(query)
+    # retriever = BM25Retriever.from_texts(split_text)
+    # matches = retriever.invoke(query)
     return matches
 
     
@@ -97,7 +97,9 @@ def runPage():
     if search_query and pdf_file is not None:
         matches = semanticSearch(extractPDF(pdf_file), search_query)
         results = [match for match in matches]
-        return results 
+        format_results = formatFilterResults(results, threshold = 1.0)
+        switch_page("redirect")
+        return format_results 
     
 
 #used to extract the text from the pdf to dispaly in streamlit
@@ -109,27 +111,34 @@ def displayPDF(file):
     return content
 
 
-def highlightText(textBlock):
+def highlightText(textBlock, matches):
     text = "Hello my name is Bob"
     annotated_text(
     (text,"", "#8cff66")
 )
         
 
-
-
-
+def formatFilterResults(matches,threshold ):
+    format_matches = []
+    for doc,score in matches:
+        if score < threshold:
+            format_matches.append(doc.page_content)
+    return format_matches
+    
 
 def main():
-    matches = runPage()
-    st.write(matches)
+    results = runPage()
+    st.write(results)
 
     # path = "/Users/abhinavpappu/Documents/PersonalProjects/PDFSearcher/Lancet_20240618/Japan--health-after-the-earthquake_lancet.pdf"
     # text = extractPDF(path)
     # query = "how many people died"
     # matches = semanticSearch(text, query)
     # results = [match for match in matches]
-    # print(results)
+    # format_results = formatFilterResults(results, threshold = 0.7)
+    # highlightText(displayPDF(path),format_results )
+    
+    
 
 if __name__ =='__main__':
     main()
