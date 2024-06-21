@@ -6,6 +6,4 @@ INstructions to run
 - activate virtual envirnoment
 - install needed dependencies
 - setup api keys
-- run stremalit app with
-'''bash
-streamlit run home.py
+- run stremalit app with '''streamlit run home.py
