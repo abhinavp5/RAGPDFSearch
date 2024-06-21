@@ -148,23 +148,22 @@ def mergePages(pages):
 def displayResults(pages, matches):
     text = mergePages(pages)
     st.subheader("These were the results in response to your query:")
-    st.write(formatSentences(matches))  # Display matches
+    st.write(formatSentences(matches))  
     st.subheader("Annotations in PDF")
     st.write(text)
 
-    # To store text segments to be displayed with annotations
     segments = []
-    last_index = 0  # To keep track of the last processed index
+    last_index = 0  
     # Process each match and find its occurrences in the text
     for match in matches:
         start_index = text.find(match, last_index)  # Find the first occurrence after the last_index
         while start_index != -1:  # While there are still occurrences of the match
             if start_index >= last_index:
                 if start_index > last_index:
-                    segments.append(text[last_index:start_index])  # Add text before the match
-                segments.append((match, "", "#8cff66"))  # Add highlighted match
-                last_index = start_index + len(match)  # Move past the current match
-            start_index = text.find(match, last_index)  # Find the next occurrence after the last_index
+                    segments.append(text[last_index:start_index])  
+                segments.append((match, "", "#8cff66"))  
+                last_index = start_index + len(match)  
+            start_index = text.find(match, last_index)  
 
     # Add any remaining text after the last match
     if last_index < len(text):
@@ -178,11 +177,13 @@ def formatSentences(matches):
     result = llm.invoke(f"reformat the content in {matches} into understadable content")
     return result.content
 
-def formatFilterResults(matches,threshold ):
+def formatFilterResults(matches,threshold):
     format_matches = []
     for doc,score in matches:
         if score < threshold:
             format_matches.append(doc.page_content)
+    if not format_matches:
+        format_matches.append("There were no matches to your query")
     return format_matches
 
 
@@ -196,8 +197,6 @@ def main():
     # results = [match for match in matches]
     # format_results = formatFilterResults(results, threshold = 0.7)
     # highlightText(displayPDF(path),format_results )
-    
-    
 
 if __name__ =='__main__':
     runPage()
