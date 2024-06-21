@@ -1,0 +1,10 @@
+langchain==0.2.5
+langchain_community==0.2.5
+langchain_google_genai==1.0.6
+langchain_huggingface==0.0.3
+langchain_text_splitters==0.2.1
+pypdf==4.2.0
+python-dotenv==1.0.1
+sentence_transformers==3.0.1
+st_annotated_text==4.0.1
+streamlit==1.36.0

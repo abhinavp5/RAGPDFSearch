@@ -1,4 +1,3 @@
-import logging
 from sentence_transformers import SentenceTransformer
 from pypdf import PdfReader
 from dotenv import load_dotenv
@@ -8,9 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.retrievers import BM25Retriever
 import streamlit as st
 from langchain_google_genai import ChatGoogleGenerativeAI
-from streamlit_extras.switch_page_button import switch_page
 from annotated_text import annotated_text
-
 import os
 
 load_dotenv()
@@ -18,8 +15,6 @@ load_dotenv()
 google_key = os.getenv("GOOGLE_API_KEY")
 pinecone_api_key = os.getenv("PINECONE_API_KEY")
 
-real_results = []
-hello = "yo whats up"
 #performs the Semantic Search
 def semanticSearch(text, query):
     # llm = ChatGoogleGenerativeAI(model = "gemini-pro",temperature =0.7)
@@ -185,18 +180,6 @@ def formatFilterResults(matches,threshold):
     if not format_matches:
         format_matches.append("There were no matches to your query")
     return format_matches
-
-
-def main():
-    runPage()
-
-    # path = "/Users/abhinavpappu/Documents/PersonalProjects/PDFSearcher/Lancet_20240618/Japan--health-after-the-earthquake_lancet.pdf"
-    # text = extractPDF(path)
-    # query = "how many people died"
-    # matches = semanticSearch(text, query)
-    # results = [match for match in matches]
-    # format_results = formatFilterResults(results, threshold = 0.7)
-    # highlightText(displayPDF(path),format_results )
 
 if __name__ =='__main__':
     runPage()
